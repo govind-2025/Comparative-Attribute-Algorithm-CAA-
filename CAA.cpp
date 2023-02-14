@@ -9,9 +9,9 @@ using namespace std;
 // 6 mergefunction
 // 7 meerge sort
 /*********************    Graph printing     ***********************/
-void printgraphVP(vector<pair<int, vector<int>>> v)
+void printgraphVP(vector<pair<int, vector<int>>> vv)
 {
-    for (auto p : v)
+    for (auto p : vv)
     {
         cout << "    " << p.first << " -> ";
         for (auto pp : p.second)
