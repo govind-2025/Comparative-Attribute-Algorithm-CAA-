@@ -178,7 +178,7 @@ int main()
 
     /*************************************************************/
     srand(time(0));
-    cout << "Jay Shree Ram\n";
+    
     cout << "Enter the number of vertices(tasks)\n";
     int n;
     cin >> n;
