@@ -22,7 +22,7 @@ void printgraphVP(vector<pair<int, vector<int>>> vv)
 
 /*****************   Unsorted Task into txt file ******************/
 void printBinG(vector<pair<int, vector<int>>> vv)
-{  
+{
     ofstream obj("UT.txt");
     obj.close();
     fstream out;
@@ -40,7 +40,7 @@ void printBinG(vector<pair<int, vector<int>>> vv)
 
 /*****************   Unsorted Task into txt file ******************/
 void printAinG(vector<pair<int, vector<int>>> vv)
-{  
+{
     ofstream obj("ST.txt");
     obj.close();
     fstream out;
@@ -72,7 +72,7 @@ void insertintopairofvector(vector<int> adj[], int v, vector<pair<int, vector<in
 
 /************************  Merge Function according to Comparative Attribute Algorithm  ****************************/
 
-void merge(vector<pair<int, vector<int>>> &UT, int l, int mid, int r, vector<int> noofrequests, vector<int> workload, int MNR, int WM)
+void merge(vector<pair<int, vector<int>>> &UT, int l, int mid, int r, vector<int> noofrequests, vector<int> workload, int MNR, int WM, vector<int> &dependency)
 {
     vector<pair<int, vector<int>>> UT1, UT2;
     for (int i = l; i <= mid; i++)
@@ -99,8 +99,10 @@ void merge(vector<pair<int, vector<int>>> &UT, int l, int mid, int r, vector<int
         }
         else
         {
-            int Du = accumulate(Tu.second.begin(), Tu.second.end(), 0);
-            int Dv = accumulate(Tv.second.begin(), Tv.second.end(), 0);
+            // int Du = accumulate(Tu.second.begin(), Tu.second.end(), 0);
+            // int Dv = accumulate(Tv.second.begin(), Tv.second.end(), 0);
+            int Du = dependency[Tu.first];
+            int Dv = dependency[Tv.first];
             if (Du > Dv)
             {
                 P = Tu;
@@ -113,8 +115,8 @@ void merge(vector<pair<int, vector<int>>> &UT, int l, int mid, int r, vector<int
             }
             else
             {
-                int NRRu = noofrequests[Tu.first] / MNR;
-                int NRRv = noofrequests[Tv.first] / MNR;
+                float NRRu = noofrequests[Tu.first] / float(MNR);
+                float NRRv = noofrequests[Tv.first] / float(MNR);
                 if (NRRu > NRRv)
                 {
                     P = Tu;
@@ -127,8 +129,8 @@ void merge(vector<pair<int, vector<int>>> &UT, int l, int mid, int r, vector<int
                 }
                 else
                 {
-                    int WLRu = workload[Tu.first] / WM;
-                    int WLRv = workload[Tv.first] / WM;
+                    float WLRu = workload[Tu.first] / float(WM);
+                    float WLRv = workload[Tv.first] / float(WM);
                     if (WLRu > WLRv)
                     {
                         P = Tv;
@@ -161,16 +163,16 @@ void merge(vector<pair<int, vector<int>>> &UT, int l, int mid, int r, vector<int
 
 /******************   Merge Sort  ******************/
 
-void mergesort(vector<pair<int, vector<int>>> &UT, int l, int r, vector<int> noofrequests, vector<int> workload, int MNR, int WM)
+void mergesort(vector<pair<int, vector<int>>> &UT, int l, int r, vector<int> noofrequests, vector<int> workload, int MNR, int WM, vector<int> &dependency)
 {
     if (l >= r)
         return;
 
     int mid = l + (r - l) / 2;
-    mergesort(UT, l, mid, noofrequests, workload, MNR, WM);
-    mergesort(UT, mid + 1, r, noofrequests, workload, MNR, WM);
+    mergesort(UT, l, mid, noofrequests, workload, MNR, WM, dependency);
+    mergesort(UT, mid + 1, r, noofrequests, workload, MNR, WM, dependency);
 
-    merge(UT, l, mid, r, noofrequests, workload, MNR, WM);
+    merge(UT, l, mid, r, noofrequests, workload, MNR, WM, dependency);
 }
 
 int main()
@@ -178,24 +180,28 @@ int main()
 
     /*************************************************************/
     srand(time(0));
-    
+    // cout << "Jay Shree Ram\n";
     cout << "Enter the number of vertices(tasks)\n";
     int n;
     cin >> n;
     vector<int> adj[n];
-
+    vector<int> dependency(n, 0);
     int no_ofedges = rand() % ((n * (n - 1)));
+    // int no_ofedges = 3;
     // cout<<"Number of edges is "<<no_ofedges<<endl;
     int cnt = 0;
     for (int i = 0; i < no_ofedges; i++)
     {
         int x = rand() % n;
         int y = rand() % n;
+        // int x, y;
+        // cin >> x >> y;
 
         if (x != y)
         {
             if (find(adj[x].begin(), adj[x].end(), y) == adj[x].end())
             {
+                dependency[y]++;
                 adj[x].push_back(y);
                 cnt++;
             }
@@ -209,12 +215,12 @@ int main()
 
     vector<int> noofrequests(n);
     vector<int> workload(n);
-    // vector<int> noofrequests{1, 2, 5, 2, 4, 3}; //   request
-    // vector<int> workload{2, 5, 4, 1, 2, 3};     // workload
+    // vector<int> noofrequests{3, 5, 4, 3};        //   request
+    // vector<int> workload{1000, 1700, 500, 1250}; // workload
     // vector<int> noofrequests(n), workload(n); // two vector's for number of workload and noofrequests  of task size;
 
-    // int no_of_r = 10; // no_of_r is range from 0 to no_of_r  requests
-    int no_of_r;
+    int no_of_r = 10; // no_of_r is range from 0 to no_of_r  requests
+    // int no_of_r;
     cout << "Enter maximum number of request\n";
     cin >> no_of_r;
     for (int i = 0; i < n; i++)
@@ -244,12 +250,12 @@ int main()
     /*********************Camparative attribute Algorithm ****************************/
 
     int si = UT.size() - 1;
-    mergesort(UT, 0, si, noofrequests, workload, MNR, WM); // here we get Sorted list of tasks
+    mergesort(UT, 0, si, noofrequests, workload, MNR, WM, dependency); // here we get Sorted list of tasks
 
     /*****************************************************************************/
     cout << "************************ After Comparative Attribute Algorithm(CAA) ******************************\n";
     printgraphVP(UT);
     printAinG(UT); // for printing sorted task into text file
-    cout << endl;  /*I used two diffrent function for printing into graph because i
+    cout << endl;  /*I usehttps://www.onlinegdb.com/classroomd two diffrent function for printing into graph because i
                       take both task list sorted and unsorted into different file */
 }
