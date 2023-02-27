@@ -256,6 +256,6 @@ int main()
     cout << "************************ After Comparative Attribute Algorithm(CAA) ******************************\n";
     printgraphVP(UT);
     printAinG(UT); // for printing sorted task into text file
-    cout << endl;  /*I usehttps://www.onlinegdb.com/classroomd two diffrent function for printing into graph because i
+    cout << endl;  /*I use two diffrent function for printing into graph because i
                       take both task list sorted and unsorted into different file */
 }
